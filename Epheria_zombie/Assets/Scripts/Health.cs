@@ -2,11 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AmmoPack : MonoBehaviour, IItem
+public class Health : MonoBehaviour, IItem
 {
-    public int ammo = 30;
+    private void OnTriggerEnter(Collider other)
+    {
+        IItem item = other.GetComponent<IItem>();
+
+        //if (item != null)
+        //    item.Use();
+    }
+
     public void Use(GameObject target)
     {
+
     }
     // Start is called before the first frame update
     void Start()

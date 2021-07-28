@@ -1,8 +1,14 @@
-ï»¿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-// ë°ë¯¸ì§€ë¥¼ ì…ì„ ìˆ˜ ìˆëŠ” íƒ€ì…ë“¤ì´ ê³µí†µì ìœ¼ë¡œ ê°€ì ¸ì•¼ í•˜ëŠ” ì¸í„°í˜ì´ìŠ¤
-public interface IDamageable {
-    // ë°ë¯¸ì§€ë¥¼ ì…ì„ ìˆ˜ ìˆëŠ” íƒ€ì…ë“¤ì€ IDamageableì„ ìƒì†í•˜ê³  OnDamage ë©”ì„œë“œë¥¼ ë°˜ë“œì‹œ êµ¬í˜„í•´ì•¼ í•œë‹¤
-    // OnDamage ë©”ì„œë“œëŠ” ì…ë ¥ìœ¼ë¡œ ë°ë¯¸ì§€ í¬ê¸°(damage), ë§ì€ ì§€ì (hitPoint), ë§ì€ í‘œë©´ì˜ ë°©í–¥(hitNormal)ì„ ë°›ëŠ”ë‹¤
+// µ¥¹ÌÁö¸¦ ÀÔÀ» ¼ö ÀÖ´Â Å¸ÀÔµéÀÌ °øÅëÀûÀ¸·Î °¡Á®¾ß ÇÏ´Â ÀÎÅÍÆäÀÌ½º
+public interface IDamageable
+{
+    // µ¥¹ÌÁö¸¦ ÀÔÀ» ¼ö ÀÖ´Â Å¸ÀÔµéÀº IDamageableÀ» »ó¼ÓÇÏ°í OnDamage ¸Ş¼­µå¸¦
+    // ¹İµå½Ã ±¸ÇöÇØ¾ß ÇÑ´Ù
+    // OnDamage ¸Ş¼­µå´Â ÀÔ·ÂÀ¸·Î µ¥¹ÌÁö Å©±â(damage), ¸ÂÀº ÁöÁ¡(hitPoint),
+    // ¸ÂÀº Ç¥¸éÀÇ ¹æÇâ(hitNormal)À» ¹Ş´Â´Ù
     void OnDamage(float damage, Vector3 hitPoint, Vector3 hitNormal);
 }
+

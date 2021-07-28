@@ -1,85 +1,178 @@
-ï»¿using System.Collections;
+using System.Collections;
 using UnityEngine;
 
-// ì´ì„ êµ¬í˜„í•œë‹¤
-public class Gun : MonoBehaviour {
-    // ì´ì˜ ìƒíƒœë¥¼ í‘œí˜„í•˜ëŠ”ë° ì‚¬ìš©í•  íƒ€ì…ì„ ì„ ì–¸í•œë‹¤
-    public enum State {
-        Ready, // ë°œì‚¬ ì¤€ë¹„ë¨
-        Empty, // íƒ„ì°½ì´ ë¹”
-        Reloading // ì¬ì¥ì „ ì¤‘
+public class Gun : MonoBehaviour
+{
+    public enum State
+    {
+        READY, // ¹ß»ç ÁØºñµÊ
+        EMPTY, // ÅºÃ¢ÀÌ ºö
+        RELOADING // ÀçÀåÀü Áß
     }
+    
+    public State state { get; private set; } // ÇöÀç ÃÑÀÇ »óÅÂ
 
-    public State state { get; private set; } // í˜„ì¬ ì´ì˜ ìƒíƒœ
+    public Transform fireTransform; // ÃÑ¾ËÀÌ ¹ß»çµÉ À§Ä¡
 
-    public Transform fireTransform; // ì´ì•Œì´ ë°œì‚¬ë  ìœ„ì¹˜
+    public ParticleSystem muzzleFlashEffect; // ÃÑ±¸ È­¿° È¿°ú
+    public ParticleSystem shellEjectEffect; // ÅºÇÇ ¹èÃâ È¿°ú
 
-    public ParticleSystem muzzleFlashEffect; // ì´êµ¬ í™”ì—¼ íš¨ê³¼
-    public ParticleSystem shellEjectEffect; // íƒ„í”¼ ë°°ì¶œ íš¨ê³¼
+    private LineRenderer bulletLineRenderer; // ÃÑ¾Ë ±ËÀûÀ» ±×¸®±â À§ÇÑ ·»´õ·¯
 
-    private LineRenderer bulletLineRenderer; // ì´ì•Œ ê¶¤ì ì„ ê·¸ë¦¬ê¸° ìœ„í•œ ë Œë”ëŸ¬
+    private AudioSource gunAudioPlayer; // ÃÑ ¼Ò¸® Àç»ı±â
+    public AudioClip shotClip; // ¹ß»ç ¼Ò¸®
+    public AudioClip reloadClip; // ÀåÀü ¼Ò¸®
+    public float damage = 25; // °ø°İ·Â
+    private float fireDistance = 50f; // »çÁ¤ °Å¸®
 
-    private AudioSource gunAudioPlayer; // ì´ ì†Œë¦¬ ì¬ìƒê¸°
-    public AudioClip shotClip; // ë°œì‚¬ ì†Œë¦¬
-    public AudioClip reloadClip; // ì¬ì¥ì „ ì†Œë¦¬
+    public int ammoRemain = 100; // ³²Àº ÀüÃ¼ Åº¾à
+    public int magCapacity = 25; // ÅºÃ¢ ¿ë·®
+    public int magAmmo; // ÇöÀç ÅºÃ¢¿¡ ³²¾ÆÀÖ´Â Åº¾à
+    public float timeBetFire = 0.12f; // ÃÑ¾Ë ¹ß»ç °£°İ
+    public float reloadTime = 1.8f; // ÀçÀåÀü ¼Ò¿ä ½Ã°£
+    private float lastFireTime; // ÃÑÀ» ¸¶Áö¸·À¸·Î ¹ß»çÇÑ ½ÃÁ¡
 
-    public float damage = 25; // ê³µê²©ë ¥
-    private float fireDistance = 50f; // ì‚¬ì •ê±°ë¦¬
+    // Start is called before the first frame update
+    private void Awake()
+    {
+        gunAudioPlayer = GetComponent<AudioSource>();
+        bulletLineRenderer = GetComponent<LineRenderer>();
 
-    public int ammoRemain = 100; // ë‚¨ì€ ì „ì²´ íƒ„ì•½
-    public int magCapacity = 25; // íƒ„ì°½ ìš©ëŸ‰
-    public int magAmmo; // í˜„ì¬ íƒ„ì°½ì— ë‚¨ì•„ìˆëŠ” íƒ„ì•½
-
-
-    public float timeBetFire = 0.12f; // ì´ì•Œ ë°œì‚¬ ê°„ê²©
-    public float reloadTime = 1.8f; // ì¬ì¥ì „ ì†Œìš” ì‹œê°„
-    private float lastFireTime; // ì´ì„ ë§ˆì§€ë§‰ìœ¼ë¡œ ë°œì‚¬í•œ ì‹œì 
-
-
-    private void Awake() {
-        // ì‚¬ìš©í•  ì»´í¬ë„ŒíŠ¸ë“¤ì˜ ì°¸ì¡°ë¥¼ ê°€ì ¸ì˜¤ê¸°
-    }
-
-    private void OnEnable() {
-        // ì´ ìƒíƒœ ì´ˆê¸°í™”
-    }
-
-    // ë°œì‚¬ ì‹œë„
-    public void Fire() {
-
-    }
-
-    // ì‹¤ì œ ë°œì‚¬ ì²˜ë¦¬
-    private void Shot() {
-        
-    }
-
-    // ë°œì‚¬ ì´í™íŠ¸ì™€ ì†Œë¦¬ë¥¼ ì¬ìƒí•˜ê³  ì´ì•Œ ê¶¤ì ì„ ê·¸ë¦°ë‹¤
-    private IEnumerator ShotEffect(Vector3 hitPosition) {
-        // ë¼ì¸ ë Œë”ëŸ¬ë¥¼ í™œì„±í™”í•˜ì—¬ ì´ì•Œ ê¶¤ì ì„ ê·¸ë¦°ë‹¤
-        bulletLineRenderer.enabled = true;
-
-        // 0.03ì´ˆ ë™ì•ˆ ì ì‹œ ì²˜ë¦¬ë¥¼ ëŒ€ê¸°
-        yield return new WaitForSeconds(0.03f);
-
-        // ë¼ì¸ ë Œë”ëŸ¬ë¥¼ ë¹„í™œì„±í™”í•˜ì—¬ ì´ì•Œ ê¶¤ì ì„ ì§€ìš´ë‹¤
+        // »ç¿ëÇÒ Á¡À» µÎ°³·Î º¯°æ
+        bulletLineRenderer.positionCount = 2;
+        // ¶óÀÎ ·»´õ·¯ ºñÈ°¼ºÈ­
         bulletLineRenderer.enabled = false;
     }
 
-    // ì¬ì¥ì „ ì‹œë„
-    public bool Reload() {
-        return false;
+    // Update is called once per frame
+    private void OnEnable()
+    {
+        // ÇöÀç ÅºÃ¢ °¡µæ Ã¤¿ì±â
+        magAmmo = magCapacity;
+        // ÃÑÀÇ ÇöÀç »óÅÂ¸¦ ÃÑÀ» ½ò ÁØºñ°¡ µÈ »óÅÂ·Î º¯°æ
+        state = State.READY;
+        // ¸¶Áö¸·À¸·Î ÃÑÀ» ½ğ ½ÃÁ¡À» ÃÊ±âÈ­
+        lastFireTime = 0;
     }
 
-    // ì‹¤ì œ ì¬ì¥ì „ ì²˜ë¦¬ë¥¼ ì§„í–‰
-    private IEnumerator ReloadRoutine() {
-        // í˜„ì¬ ìƒíƒœë¥¼ ì¬ì¥ì „ ì¤‘ ìƒíƒœë¡œ ì „í™˜
-        state = State.Reloading;
-        
-        // ì¬ì¥ì „ ì†Œìš” ì‹œê°„ ë§Œí¼ ì²˜ë¦¬ë¥¼ ì‰¬ê¸°
+    private IEnumerator ShotEffect(Vector3 hitPosition)
+    {
+        // ÃÑ±¸ È­¿¬ È¿°ú Àç»ı
+        muzzleFlashEffect.Play();
+        // ÅºÇÇ ¹èÃâ È¿°ú Àç»ı
+        shellEjectEffect.Play();
+
+        // ÃÑ°İ¼Ò¸® Àç»ı
+        gunAudioPlayer.PlayOneShot(shotClip);
+
+        //¼±ÀÇ ½ÃÀÛÁ¡Àº ÃÑ±¸ÀÇ À§Ä¡
+        bulletLineRenderer.SetPosition(0, fireTransform.position);
+        // ¼±ÀÇ ³¡Á¡Àº ÀÔ·ÂÀ¸·Î µ¹¾Æ¿Â Ãæµ¹ À§Ä¡
+        bulletLineRenderer.SetPosition(1, hitPosition);
+        //¶óÀÎ ·»´õ·¯¸¦ È°»óÈ­ÇÏ¿© ÃÑ¾Ë ±ËÀûÀ» ±×¸°´Ù.
+        bulletLineRenderer.enabled = true;
+
+        // 0.03ÃÊ µ¿¾È Àá½Ã Ã³¸®¸¦ ´ë±â
+        yield return new WaitForSeconds(0.03f);
+
+        // ¶óÀÎ ·»´õ·¯¸¦ ºñÈ°¼ºÇÏ¿© ÃÑ¾Ë ±ËÀûÀ» Áö¿î´Ù
+        bulletLineRenderer.enabled = false;
+    }
+
+    public void Fire()
+    {
+        // ÇöÀç »óÅÂ°¡ ¹ß»ç °¡´ÉÇÑ »óÅÂ?
+        // ±×¸®°í ¸¶Áö¸· ÃÑ ¹ß»ç ½ÃÁ¡¿¡¼­ timeBetFire ÀÌ»óÀÇ ½Ã°£ÀÌ Áö³¯ ¶§
+        if(state == State.READY && Time.time >= lastFireTime + timeBetFire)
+        {
+            // ¸¶Áö¸· ÃÑ ¹ß»ç ½ÃÁ¡ °»½Å
+            lastFireTime = Time.time;
+            // ½ÇÁ¦ ¹ß»ç Ã³¸® ½ÇÇà
+            Shot();
+        }
+    }
+
+    private void Shot()
+    {
+        // RayCast ¿¡ ÀÇÇÑ Ãæµ¹ Á¤º¸¸¦ ÀúÀåÇÏ´Â ÄÁÅ×ÀÌ³Ê
+        RaycastHit hit;
+
+        //Åº¾ËÀÌ ¸ÂÀº °÷À» ÀúÀåÇÒ º¯¼ö
+        Vector3 hitPosition = Vector3.zero;
+
+        if(Physics.Raycast(fireTransform.position, fireTransform.forward, out hit, fireDistance))
+        {
+            // Ray °¡ ¾î¶² ¹°Ã¼¿Í Ãæµ¹ÇÑ °æ¿ì
+            // Ãæµ¹ÇÑ »ó´ë¹æÀ¸·Î ºÎÅÍ IDmagaeable Component¸¦ °¡Á®¿Â´Ù.
+            IDamageable target = hit.collider.GetComponent<IDamageable>();
+
+            if(target != null)
+            {
+                target.OnDamage(damage, hit.point, hit.normal);
+            }
+
+            // Ray °¡ Ãæµ¹ÇÑ À§Ä¡ ÀúÀå
+            hitPosition = hit.point;
+        }
+        else
+        {
+            // Ray °¡ ´Ù¸¥ ¹°Ã¼¿Í Ãæµ¹ÇÏÁö ¾Ê¾Ò´Ù¸é
+            // Åº¾ËÀÌ ÃÖ´ë »çÁ¤°Å¸®±îÁö ³¯¾Æ°¬À» ¶§ÀÇ À§Ä¡¸¦ Ãæµ¹ À§Ä¡·Î »ç¿ë
+            hitPosition = fireTransform.position + fireTransform.forward * fireDistance;
+        }
+
+        // ¹ß»ç ÀÌÆåÆ® Àç»ı ½ÃÀÛ
+        StartCoroutine(ShotEffect(hitPosition));
+
+        // ³²Àº Åº¾Ë ¼ö Â÷°¨
+        magAmmo--;
+
+        if(magAmmo <= 0)
+        {
+            // ÅºÃ¢¿¡ ³²Àº Åº¾ËÀÌ ¾ø´Ù¸é ÃÑÀÇ ÇöÀç »óÅÂ¸¦ Empty·Î °»½Å
+            state = State.EMPTY;
+        }
+    }
+
+    private IEnumerator ReloadRoutine()
+    {
+        // ÇöÀç »óÅÂ¸¦ ÀçÀåÀü Áß »óÅÂ·Î ÀüÈ¯
+        state = State.RELOADING;
+
+        // ÀçÀåÀü ¼Ò¸® Àç»ı
+        gunAudioPlayer.PlayOneShot(reloadClip);
+
+        // ÀçÀåÀü ¼Ò¿ä ½Ã°£ ¸¸Å­ Ã³¸®¸¦ ½¬±â
         yield return new WaitForSeconds(reloadTime);
 
-        // ì´ì˜ í˜„ì¬ ìƒíƒœë¥¼ ë°œì‚¬ ì¤€ë¹„ëœ ìƒíƒœë¡œ ë³€ê²½
-        state = State.Ready;
+        int ammoToFill = magCapacity - magAmmo;
+
+        // ÅºÃ¢¿¡ Ã¤¿ö¾ßÇÒ Åº¾ËÀÌ ³²Àº Åº¾Ëº¸´Ù ¸¹´Ù¸é
+        // Ã¤¿ö¾ß ÇÒ Åº¾Ë ¼ö¸¦ ³²Àº Åº¾Ë ¼ö¿¡ ¸ÂÃç ÁÙÀÎ´Ù.
+        if(ammoRemain < ammoToFill)
+        {
+            ammoToFill = ammoRemain;
+        }
+
+        //ÅºÃ¢À» Ã¤¿ò
+        magAmmo += ammoToFill;
+        //³²Àº Åº¾Ë¿¡¼­ ÅºÃ¢¿¡ Ã¤¿î¸¸Å­ Åº¾ËÀ» »«´Ù
+        ammoRemain -= ammoToFill;
+
+        state = State.READY;
+    }
+
+    public bool Reload()
+    {
+        if(state == State.RELOADING || ammoRemain <= 0 || magAmmo > magCapacity)
+        {
+            // ÀÌ¹Ì ÀçÀåÀü ÁßÀÌ°Å³ª ³²Àº Åº¾ËÀÌ ¾ø°Å³ª
+            // ÅºÃ¢¿¡ Åº¾ËÀÌ ÀÌ¹Ì °¡µæÇÑ °æ¿ì ÀçÀåÀü ºÒ°¡
+            return false;
+        }
+
+        // ÀçÀåÀü Ã³¸® ½ÃÀÛ
+        StartCoroutine(ReloadRoutine());
+        return true;
     }
 }
